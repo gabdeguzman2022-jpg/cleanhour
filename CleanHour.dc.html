@@ -21,6 +21,7 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
 @keyframes chBand{from{opacity:0;transform:scaleY(.5)}to{opacity:1;transform:scaleY(1)}}
 @keyframes chFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes chSkel{0%,100%{opacity:.5}50%{opacity:.85}}
+@keyframes chPulse{0%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(0.72)}100%{opacity:1;transform:scale(1)}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
 </style>
 </helmet>
@@ -42,7 +43,10 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
             </sc-for>
           </select>
         </div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a867a;font-variant-numeric:tabular-nums">UPDATED {{ updatedAt }}</div>
+        <div style="display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a867a;font-variant-numeric:tabular-nums">
+          <span style="width:6px;height:6px;border-radius:50%;background:#1c5c3d;display:inline-block;animation:chPulse 2s ease-in-out infinite"></span>
+          UPDATED {{ updatedAt }}
+        </div>
       </div>
     </div>
     <div style="max-width:1320px;margin:0 auto;padding:0 24px;display:flex;gap:28px">
@@ -97,7 +101,7 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
     <sc-if value="{{ showNow }}" hint-placeholder-val="{{ true }}">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px;align-items:start;animation:chFade .35s ease-out">
 
-        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;padding:32px 32px 28px">
+        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;box-shadow:0 1px 2px rgba(22,21,15,0.04);padding:32px 32px 28px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
             <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a867a">Carbon intensity · {{ zoneName }}</div>
             <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a867a">{{ nowSlotLabel }}</div>
@@ -134,7 +138,7 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
           </sc-if>
         </section>
 
-        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;padding:32px">
+        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;box-shadow:0 1px 2px rgba(22,21,15,0.04);padding:32px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
             <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a867a">Generation mix</div>
             <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a867a">{{ renewableShare }}% RENEWABLE</div>
@@ -163,6 +167,28 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
             </sc-for>
           </div>
         </section>
+
+        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;box-shadow:0 1px 2px rgba(22,21,15,0.04);padding:32px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px">
+            <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a867a">Your impact</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8a867a">ALL TIME</div>
+          </div>
+          <sc-if value="{{ impactHasAny }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:baseline;gap:10px;margin-top:18px">
+              <div style="font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:56px;line-height:0.9;letter-spacing:-0.02em;color:#1c5c3d">{{ impactSavedLabel }}</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5c5950">CO₂ recommended-saved</div>
+            </div>
+            <div style="margin-top:8px;color:#5c5950">≈ not driving <span style="font-family:'IBM Plex Mono',monospace;color:#16150f">{{ impactKmLabel }}</span> in an average car</div>
+            <div style="margin-top:22px;padding-top:18px;border-top:1px solid #e2ded3;display:flex;align-items:center;gap:10px">
+              <div style="width:8px;height:8px;border-radius:50%;background:#1c5c3d"></div>
+              <div style="font-size:13px;color:#16150f">{{ impactTasksLabel }}</div>
+            </div>
+            <div style="margin-top:10px;font-size:11.5px;color:#8a867a">Credited the moment each task is scheduled, using that task's estimated saving — this app doesn't know if you actually ran it.</div>
+          </sc-if>
+          <sc-if value="{{ impactEmpty }}" hint-placeholder-val="{{ true }}">
+            <div style="margin-top:22px;padding:20px 0 4px;color:#8a867a">Schedule your first task on the Schedule tab to start tracking your impact.</div>
+          </sc-if>
+        </section>
       </div>
     </sc-if>
 
@@ -176,7 +202,7 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
       </sc-if>
       <sc-if value="{{ hasHistory }}" hint-placeholder-val="{{ true }}">
       <div style="animation:chFade .35s ease-out">
-        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;padding:28px 32px">
+        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;box-shadow:0 1px 2px rgba(22,21,15,0.04);padding:28px 32px">
           <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
             <div>
               <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a867a">48-hour forecast · {{ zoneName }}</div>
@@ -227,7 +253,7 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
         </section>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:24px;align-items:start">
-          <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;padding:26px 28px">
+          <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;box-shadow:0 1px 2px rgba(22,21,15,0.04);padding:26px 28px">
             <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a867a">Add a task</div>
             <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px">
               <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
@@ -342,7 +368,7 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
       </sc-if>
       <sc-if value="{{ hasHistory }}" hint-placeholder-val="{{ true }}">
       <div style="animation:chFade .35s ease-out">
-        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;padding:28px 32px">
+        <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;box-shadow:0 1px 2px rgba(22,21,15,0.04);padding:28px 32px">
           <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
             <div>
               <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a867a">Forecast lab · {{ zoneName }} · {{ labResolution }}</div>
@@ -376,7 +402,7 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
         </section>
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;margin-top:24px;align-items:start">
-          <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;padding:26px 28px">
+          <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;box-shadow:0 1px 2px rgba(22,21,15,0.04);padding:26px 28px">
             <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a867a">Mean absolute error · gCO₂/kWh</div>
             <table style="width:100%;border-collapse:collapse;margin-top:16px;font-variant-numeric:tabular-nums">
               <thead>
@@ -401,7 +427,7 @@ input,select,button,textarea{font-family:inherit;font-size:inherit;color:inherit
             <div style="margin-top:14px;font-size:12px;color:#5c5950">Δ is operator MAE minus CleanHour MAE; positive means our model is closer to measured. Rolling 30-day evaluation, {{ labSamples }} paired samples.</div>
           </section>
 
-          <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;padding:26px 28px">
+          <section style="background:#fffdf8;border:1px solid #e2ded3;border-radius:4px;box-shadow:0 1px 2px rgba(22,21,15,0.04);padding:26px 28px">
             <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8a867a">Method notes</div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:20px;margin-top:16px">
               <sc-for list="{{ labStats }}" as="s" hint-placeholder-count="4">
@@ -488,14 +514,40 @@ const pad2 = n => (n < 10 ? "0" : "") + n;
 const hhmm = d => pad2(d.getHours()) + ":" + pad2(d.getMinutes());
 const isoZ = ts => new Date(ts).toISOString().slice(0, 16) + "Z";
 
+// EPA "Greenhouse Gas Emissions from a Typical Passenger Vehicle" average, used only to make
+// a savings figure relatable (e.g. "the same as not driving 2km") -- not part of any calculation.
+const CAR_G_PER_KM = 251;
+
+const STORAGE_KEY = "cleanhour_state_v1";
+function loadStored() {
+  try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : {}; }
+  catch (e) { return {}; }
+}
+function saveStored(patch) {
+  try {
+    const cur = loadStored();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(Object.assign({}, cur, patch)));
+  } catch (e) { /* private browsing or storage unavailable -- fail silently */ }
+}
+
 class Component extends DCLogic {
   state = { tab:"now", zone:"GB", status:"loading", data:null, tasks:[], cap:7.4, seq:1,
-            form:{ name:"Dishwasher", dur:2, kw:1.8, deadline:24 }, disp:0, hover:null, forced:false };
+            form:{ name:"Dishwasher", dur:2, kw:1.8, deadline:24 }, disp:0, hover:null, forced:false,
+            lifetimeSaved:0, lifetimeCount:0 };
 
   componentDidMount() {
+    const stored = loadStored();
     const label = this.props.initialZone;
-    const id = Object.keys(ZONES).find(k => ZONES[k].name === label) || "GB";
-    this.setState({ zone: id });
+    const fallbackId = Object.keys(ZONES).find(k => ZONES[k].name === label) || "GB";
+    const id = (stored.zone && ZONES[stored.zone]) ? stored.zone : fallbackId;
+    this.setState({
+      zone: id,
+      cap: typeof stored.cap === "number" ? stored.cap : this.state.cap,
+      tasks: Array.isArray(stored.tasks) ? stored.tasks : this.state.tasks,
+      seq: typeof stored.seq === "number" ? stored.seq : this.state.seq,
+      lifetimeSaved: typeof stored.lifetimeSaved === "number" ? stored.lifetimeSaved : 0,
+      lifetimeCount: typeof stored.lifetimeCount === "number" ? stored.lifetimeCount : 0
+    });
     this.load(id);
   }
   componentDidUpdate(prev) {
@@ -803,6 +855,28 @@ class Component extends DCLogic {
     }).map((r, i, arr) => { r.load = load; return r; });
   }
 
+  // One-off estimate for a single new task, ignoring other tasks' committed load --
+  // used only to credit the lifetime-impact counter at the moment a task is added.
+  estimateSavings(task) {
+    const d = this.state.data; if (!d) return 0;
+    const per = 60 / d.step;
+    const fut = d.slots.slice(d.nowIdx);
+    const n = Math.max(1, Math.round(task.dur * per));
+    const limit = Math.min(fut.length, Math.round(task.deadline * per));
+    let best = -1, bestAvg = Infinity;
+    for (let s = 0; s + n <= limit; s++) {
+      let sum = 0;
+      for (let i = s; i < s + n; i++) sum += fut[i].model;
+      const avg = sum / n;
+      if (avg < bestAvg - 0.001) { bestAvg = avg; best = s; }
+    }
+    if (best < 0) return 0;
+    let nowSum = 0, nowN = Math.min(n, fut.length);
+    for (let i = 0; i < nowN; i++) nowSum += fut[i].model;
+    const nowAvg = nowSum / nowN;
+    return Math.max(0, task.kw * task.dur * (nowAvg - bestAvg));
+  }
+
   path(vals, x0, x1, y0, y1, lo, hi, only) {
     const n = vals.length; let d = "", open = false;
     for (let i = 0; i < n; i++) {
@@ -828,7 +902,7 @@ class Component extends DCLogic {
     const zoneOptions = Object.keys(ZONES).map(id => ({ id, name: ZONES[id].name }));
     const common = {
       tabs, zoneOptions, zone: st.zone, zoneName: zp.name,
-      onZone: e => { const z = e.target.value; this.setState({ zone:z, forced:false, hover:null }); this.load(z, true); },
+      onZone: e => { const z = e.target.value; this.setState({ zone:z, forced:false, hover:null }); saveStored({ zone:z }); this.load(z, true); },
       isLoading: st.status === "loading", isError: st.status === "error",
       showNow: st.status === "ready" && st.tab === "now",
       showSchedule: st.status === "ready" && st.tab === "schedule",
@@ -838,7 +912,12 @@ class Component extends DCLogic {
       retry: () => { this.setState({ forced:true }); this.load(st.zone, true); },
       goGB: () => { this.setState({ zone:"GB", forced:true }); this.load("GB", true); },
       capLabel: st.cap.toFixed(1), cap: st.cap,
-      hasHistory: !(d && d.hasHistory === false), noHistory: !!(d && d.hasHistory === false)
+      hasHistory: !(d && d.hasHistory === false), noHistory: !!(d && d.hasHistory === false),
+      impactHasAny: st.lifetimeCount > 0, impactEmpty: st.lifetimeCount === 0,
+      impactCount: st.lifetimeCount,
+      impactSavedLabel: st.lifetimeSaved >= 1000 ? (st.lifetimeSaved / 1000).toFixed(1) + " kg" : Math.round(st.lifetimeSaved) + " g",
+      impactKmLabel: (st.lifetimeSaved / CAR_G_PER_KM).toFixed(1) + " km",
+      impactTasksLabel: st.lifetimeCount === 1 ? "1 task scheduled" : st.lifetimeCount + " tasks scheduled"
     };
     if (!d || st.status !== "ready") return common;
 
@@ -971,9 +1050,15 @@ class Component extends DCLogic {
     const cleanestIdx = dayVals.indexOf(dayMin);
     const cleanestTime = hhmm(new Date(d.slots[d.nowIdx + cleanestIdx].ts));
 
+    const removeTask = id => this.setState(s => {
+      const tasks = s.tasks.filter(x => x.id !== id);
+      saveStored({ tasks });
+      return { tasks };
+    });
+
     const planCards = plans.map((p, i) => {
       const t = p.task;
-      if (!p.ok) return { name: t.name, meta: t.dur + "h · " + t.kw.toFixed(1) + " kW · by +" + t.deadline + "h", ok:false, blocked:true, color:"#93231d", remove: () => this.setState(s => ({ tasks: s.tasks.filter(x => x.id !== t.id) })) };
+      if (!p.ok) return { name: t.name, meta: t.dur + "h · " + t.kw.toFixed(1) + " kW · by +" + t.deadline + "h", ok:false, blocked:true, color:"#93231d", remove: () => removeTask(t.id) };
       const startDate = new Date(d.slots[d.nowIdx + p.start].ts);
       const endDate = new Date(d.slots[d.nowIdx + p.start].ts + t.dur * 3600000);
       const ix = this.idx(p.avg, base);
@@ -986,15 +1071,24 @@ class Component extends DCLogic {
         avg: Math.round(p.avg), nowAvg: Math.round(p.nowAvg), indexLabel: ix.label + " · gCO₂/kWh",
         saves: saved > 0 ? "−" + saved + " g" : "0 g",
         savesLabel: saved > 0 ? "CO₂ saved vs. starting now" : "now is already the cleanest window",
-        remove: () => this.setState(s => ({ tasks: s.tasks.filter(x => x.id !== t.id) }))
+        remove: () => removeTask(t.id)
       };
     });
     const totalSaved = planCards.filter(p => p.ok).reduce((s, p) => s + (parseInt(p.saves.replace(/[^0-9]/g, ""), 10) || 0), 0);
     const peak = plans.length && plans[0].load ? Math.max.apply(null, plans[plans.length - 1].load || [0]) : 0;
 
-    const addFrom = (name, dur, kw, deadline) => this.setState(s => ({
-      tasks: s.tasks.concat([{ id: s.seq, name, dur, kw, deadline }]), seq: s.seq + 1
-    }));
+    const addFrom = (name, dur, kw, deadline) => {
+      const task = { id: this.state.seq, name, dur, kw, deadline };
+      const est = this.estimateSavings(task);
+      this.setState(s => {
+        const tasks = s.tasks.concat([task]);
+        const seq = s.seq + 1;
+        const lifetimeSaved = s.lifetimeSaved + est;
+        const lifetimeCount = s.lifetimeCount + 1;
+        saveStored({ tasks, seq, lifetimeSaved, lifetimeCount });
+        return { tasks, seq, lifetimeSaved, lifetimeCount };
+      });
+    };
 
     return Object.assign(common, {
       nowDisplay: Math.round(st.disp), nowColor: curIdx.color, nowIndexLabel: curIdx.label,
@@ -1038,7 +1132,7 @@ class Component extends DCLogic {
       setDur: e => { const v = parseFloat(e.target.value); this.setState(s => ({ form: Object.assign({}, s.form, { dur:v }) })); },
       setKw: e => { const v = e.target.value; this.setState(s => ({ form: Object.assign({}, s.form, { kw: v === "" ? "" : parseFloat(v) || 0 }) })); },
       setDeadline: e => { const v = parseInt(e.target.value, 10); this.setState(s => ({ form: Object.assign({}, s.form, { deadline:v }) })); },
-      setCap: e => { const v = parseFloat(e.target.value); this.setState({ cap:v }); },
+      setCap: e => { const v = parseFloat(e.target.value); this.setState({ cap:v }); saveStored({ cap:v }); },
       addTask: () => { const f = st.form; addFrom(f.name || "Load", f.dur, Math.max(0.1, f.kw || 1), f.deadline); },
       lab, mae, labResolution: d.step === 30 ? "half-hourly" : "hourly",
       labSamples: d.slots.filter(s => s.actual != null && s.op != null).length.toLocaleString(),
