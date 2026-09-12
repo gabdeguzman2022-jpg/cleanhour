@@ -546,7 +546,8 @@ class Component extends DCLogic {
       tasks: Array.isArray(stored.tasks) ? stored.tasks : this.state.tasks,
       seq: typeof stored.seq === "number" ? stored.seq : this.state.seq,
       lifetimeSaved: typeof stored.lifetimeSaved === "number" ? stored.lifetimeSaved : 0,
-      lifetimeCount: typeof stored.lifetimeCount === "number" ? stored.lifetimeCount : 0
+      lifetimeCount: typeof stored.lifetimeCount === "number" ? stored.lifetimeCount : 0,
+      form: stored.form && typeof stored.form === "object" ? Object.assign({}, this.state.form, stored.form) : this.state.form
     });
     this.load(id);
   }
@@ -1122,16 +1123,16 @@ class Component extends DCLogic {
         border: st.form.name === p.name ? "#16150f" : "#d8d3c6",
         bg: st.form.name === p.name ? "#16150f" : "#fffdf8",
         fg: st.form.name === p.name ? "#fffdf8" : "#16150f",
-        pick: () => this.setState(s => ({ form: Object.assign({}, s.form, { name:p.name, dur:p.dur, kw:p.kw }) })),
+        pick: () => this.setState(s => { const form = Object.assign({}, s.form, { name:p.name, dur:p.dur, kw:p.kw }); saveStored({ form }); return { form }; }),
         quick: () => addFrom(p.name, p.dur, p.kw, 24)
       })),
       form: { name: st.form.name, dur: String(st.form.dur), kw: String(st.form.kw), deadline: String(st.form.deadline) },
       durOptions: [0.5,1,1.5,2,3,4,6,8].map(v => ({ v: String(v), label: v + " h" })),
       deadlineOptions: [6,12,24,36,48].map(v => ({ v: String(v), label: "within " + v + " h" })),
-      setName: e => { const v = e.target.value; this.setState(s => ({ form: Object.assign({}, s.form, { name:v }) })); },
-      setDur: e => { const v = parseFloat(e.target.value); this.setState(s => ({ form: Object.assign({}, s.form, { dur:v }) })); },
-      setKw: e => { const v = e.target.value; this.setState(s => ({ form: Object.assign({}, s.form, { kw: v === "" ? "" : parseFloat(v) || 0 }) })); },
-      setDeadline: e => { const v = parseInt(e.target.value, 10); this.setState(s => ({ form: Object.assign({}, s.form, { deadline:v }) })); },
+      setName: e => { const v = e.target.value; this.setState(s => { const form = Object.assign({}, s.form, { name:v }); saveStored({ form }); return { form }; }); },
+      setDur: e => { const v = parseFloat(e.target.value); this.setState(s => { const form = Object.assign({}, s.form, { dur:v }); saveStored({ form }); return { form }; }); },
+      setKw: e => { const v = e.target.value; this.setState(s => { const form = Object.assign({}, s.form, { kw: v === "" ? "" : parseFloat(v) || 0 }); saveStored({ form }); return { form }; }); },
+      setDeadline: e => { const v = parseInt(e.target.value, 10); this.setState(s => { const form = Object.assign({}, s.form, { deadline:v }); saveStored({ form }); return { form }; }); },
       setCap: e => { const v = parseFloat(e.target.value); this.setState({ cap:v }); saveStored({ cap:v }); },
       addTask: () => { const f = st.form; addFrom(f.name || "Load", f.dur, Math.max(0.1, f.kw || 1), f.deadline); },
       lab, mae, labResolution: d.step === 30 ? "half-hourly" : "hourly",
