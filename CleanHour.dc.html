@@ -553,11 +553,23 @@ class Component extends DCLogic {
     const initialSaved = typeof stored.lifetimeSaved === "number" ? stored.lifetimeSaved : 0;
     if (initialSaved > 0) this.tween("impactDisp", initialSaved, this.impactRaf, r => this.impactRaf = r);
     this.load(id);
+    this.pollTimer = setInterval(() => this.silentRefresh(), 30000);
   }
   componentDidUpdate(prev) {
     if (prev.viewState !== this.props.viewState) { this.setState({ forced:false }); this.load(this.state.zone, true); }
   }
-  componentWillUnmount() { clearTimeout(this.t); cancelAnimationFrame(this.raf); cancelAnimationFrame(this.impactRaf); }
+  componentWillUnmount() { clearTimeout(this.t); clearInterval(this.pollTimer); cancelAnimationFrame(this.raf); cancelAnimationFrame(this.impactRaf); }
+
+  // Background refresh every 30s -- unlike load(), never flips to the loading skeleton or an
+  // error screen, so a live view just quietly gets fresher numbers instead of flickering.
+  silentRefresh() {
+    if (this.state.status !== "ready") return;
+    this.loadReal(this.state.zone).then(data => {
+      this.setState({ data });
+      const cur = data.slots[data.nowIdx];
+      this.animateTo(cur.actual != null ? cur.actual : cur.model);
+    }).catch(err => console.error("[CleanHour] background refresh failed:", err));
+  }
 
   reduced() { return typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches; }
 
